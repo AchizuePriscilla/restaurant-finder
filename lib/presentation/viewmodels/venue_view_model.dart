@@ -73,7 +73,6 @@ class VenueViewModel extends Notifier<VenueState> {
     );
 
     state = state.copyWith(
-      currentLocation: location,
       isLoading: true,
       clearErrorMessage: true,
     );
@@ -90,6 +89,7 @@ class VenueViewModel extends Notifier<VenueState> {
         return;
       }
       state = state.copyWith(
+        currentLocation: location,
         venues: venues,
         isLoading: false,
         clearErrorMessage: true,

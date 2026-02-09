@@ -5,6 +5,7 @@ extension ApiExceptionTypeFailureMapping on ApiExceptionType {
   FailureType toFailureType() {
     return switch (this) {
       ApiExceptionType.network => FailureType.network,
+      ApiExceptionType.timeout => FailureType.timeout,
       ApiExceptionType.parsing => FailureType.parsing,
       ApiExceptionType.unexpected => FailureType.unknown,
     };

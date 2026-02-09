@@ -70,8 +70,15 @@ class ApiExceptionInterceptor extends Interceptor {
 
     if (err.type == DioExceptionType.connectionTimeout ||
         err.type == DioExceptionType.sendTimeout ||
-        err.type == DioExceptionType.receiveTimeout ||
-        err.type == DioExceptionType.connectionError) {
+        err.type == DioExceptionType.receiveTimeout) {
+      return ApiException(
+        message: 'Request timed out',
+        type: ApiExceptionType.timeout,
+        error: err.error,
+      );
+    }
+
+    if (err.type == DioExceptionType.connectionError) {
       return ApiException(
         message: 'Network request failed',
         type: ApiExceptionType.network,
@@ -91,6 +98,9 @@ LogInterceptor buildLoggingInterceptor() {
   return LogInterceptor(
     requestBody: false,
     responseBody: false,
+    responseUrl: false,
+    requestHeader: false,
+    responseHeader: false,
     logPrint: (message) {
       developer.log(message.toString(), name: 'HTTP');
     },

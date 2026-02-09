@@ -1,5 +1,3 @@
-import 'dart:developer' as developer;
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../domain/errors/failure.dart';
@@ -19,12 +17,7 @@ class FavouriteRepositoryImpl implements FavouriteRepository {
     try {
       final values =
           _sharedPreferences.getStringList(_favouritesKey) ?? <String>[];
-      final favourites = values.toSet();
-      developer.log(
-        'Favourites loaded: count=${favourites.length}',
-        name: 'FavouriteRepositoryImpl',
-      );
-      return favourites;
+      return values.toSet();
     } catch (error, stackTrace) {
       throw Failure.unknown(
         message: 'Failed to load favourites.',
@@ -49,11 +42,6 @@ class FavouriteRepositoryImpl implements FavouriteRepository {
       await _sharedPreferences.setStringList(
         _favouritesKey,
         favourites.toList(growable: false),
-      );
-
-      developer.log(
-        'Favourite toggled: $venueId',
-        name: 'FavouriteRepositoryImpl',
       );
     } catch (error, stackTrace) {
       throw Failure.unknown(

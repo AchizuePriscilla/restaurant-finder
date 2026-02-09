@@ -1,5 +1,6 @@
 enum ApiExceptionType {
   network,
+  timeout,
   parsing,
   unexpected,
 }

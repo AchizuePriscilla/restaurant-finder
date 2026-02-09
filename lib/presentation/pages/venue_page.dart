@@ -1,26 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../providers/providers.dart';
+import '../bloc/venue_bloc.dart';
+import '../bloc/venue_event.dart';
 import '../state/venue_state.dart';
 import '../widgets/venue_list.dart';
 
-class VenuePage extends ConsumerWidget {
+class VenuePage extends StatelessWidget {
   const VenuePage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(venueViewModelProvider);
-    final viewModel = ref.read(venueViewModelProvider.notifier);
-
+  Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Nearby Restaurants'),
-      ),
-      body: _buildBody(
-        context: context,
-        state: state,
-        onToggleFavourite: viewModel.toggleFavourite,
+      appBar: AppBar(title: const Text('Nearby Restaurants')),
+      body: BlocBuilder<VenueBloc, VenueState>(
+        builder: (context, state) {
+          return _buildBody(
+            context: context,
+            state: state,
+            onToggleFavourite: (venueId) =>
+                context.read<VenueBloc>().add(ToggleFavouriteVenue(venueId)),
+          );
+        },
       ),
     );
   }
@@ -31,25 +32,31 @@ class VenuePage extends ConsumerWidget {
     required ValueChanged<String> onToggleFavourite,
   }) {
     if (state.isLoading && state.venues.isEmpty) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return const Center(child: CircularProgressIndicator());
     }
 
     if (state.errorMessage != null && state.venues.isEmpty) {
-      return Center(
-        child: Text(state.errorMessage!),
-      );
+      return Center(child: Text(state.errorMessage!));
     }
 
     if (state.venues.isEmpty) {
-      return const Center(
-        child: Text('No venues nearby'),
-      );
+      return const Center(child: Text('No venues nearby'));
     }
 
     return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 300),
+      duration: const Duration(seconds: 1),
+      switchInCurve: Curves.easeOut,
+      switchOutCurve: Curves.easeIn,
+      transitionBuilder: (child, animation) {
+        final offsetAnimation = Tween<Offset>(
+          begin: const Offset(1, 0),
+          end: Offset.zero,
+        ).animate(animation);
+
+        return ClipRect(
+          child: SlideTransition(position: offsetAnimation, child: child),
+        );
+      },
       child: VenueList(
         key: ValueKey(state.currentLocation),
         venues: state.venues,

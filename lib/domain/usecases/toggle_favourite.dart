@@ -1,7 +1,7 @@
 import '../repositories/favourite_repository.dart';
 
-class ToggleFavourite {
-  ToggleFavourite(this._favouriteRepository);
+class ToggleFavouriteUseCase {
+  ToggleFavouriteUseCase(this._favouriteRepository);
 
   final FavouriteRepository _favouriteRepository;
 

@@ -1,0 +1,109 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../domain/repositories/location_provider.dart';
+import '../../domain/usecases/apply_favourites_to_venues.dart';
+import '../../domain/usecases/get_venues_for_location.dart';
+import '../../domain/usecases/toggle_favourite.dart';
+import '../../domain/value_objects/lat_lng.dart';
+import '../state/venue_state.dart';
+import 'venue_event.dart';
+import '../utils/error_message.dart';
+
+class VenueBloc extends Bloc<VenueEvent, VenueState> {
+  VenueBloc({
+    required LocationProvider locationProvider,
+    required GetVenuesForLocation getVenuesForLocation,
+    required ApplyFavouritesToVenues applyFavouritesToVenues,
+    required ToggleFavouriteUseCase toggleFavouriteUseCase,
+  }) : _locationProvider = locationProvider,
+       _getVenuesForLocation = getVenuesForLocation,
+       _applyFavouritesToVenues = applyFavouritesToVenues,
+       _toggleFavouriteUseCase = toggleFavouriteUseCase,
+       super(VenueState.initial()) {
+    on<LocationObservingStarted>(_onStarted);
+    on<ToggleFavouriteVenue>(_onToggleFavourite);
+  }
+
+  static const int _venueLimit = 15;
+
+  final LocationProvider _locationProvider;
+  final GetVenuesForLocation _getVenuesForLocation;
+  final ApplyFavouritesToVenues _applyFavouritesToVenues;
+  final ToggleFavouriteUseCase _toggleFavouriteUseCase;
+
+  bool _started = false;
+
+  Future<void> _onStarted(
+    LocationObservingStarted event,
+    Emitter<VenueState> emit,
+  ) async {
+    if (_started) {
+      return;
+    }
+    _started = true;
+    await emit.onEach<LatLng>(
+      _locationProvider.locationStream(),
+      onData: (location) => _handleLocation(location, emit),
+      onError: (error, _) => _handleLocationError(error, emit),
+    );
+  }
+
+  Future<void> _onToggleFavourite(
+    ToggleFavouriteVenue event,
+    Emitter<VenueState> emit,
+  ) async {
+    try {
+      await _toggleFavouriteUseCase(event.venueId);
+      final updated = state.venues
+          .map(
+            (venue) => venue.id == event.venueId
+                ? venue.copyWith(isFavourite: !venue.isFavourite)
+                : venue,
+          )
+          .toList(growable: false);
+      emit(state.copyWith(venues: updated, clearErrorMessage: true));
+    } catch (error) {
+      final message = messageForError(
+        error,
+        fallback: 'Failed to toggle favourite.',
+      );
+      emit(state.copyWith(errorMessage: message));
+    }
+  }
+
+  Future<void> _handleLocation(
+    LatLng location,
+    Emitter<VenueState> emit,
+  ) async {
+    emit(state.copyWith(isLoading: true, clearErrorMessage: true));
+
+    try {
+      final venues = await _getVenuesForLocation(location, limit: _venueLimit);
+      final venuesWithFavourites = await _applyFavouritesToVenues(venues);
+      emit(
+        state.copyWith(
+          currentLocation: location,
+          venues: venuesWithFavourites,
+          isLoading: false,
+          clearErrorMessage: true,
+        ),
+      );
+    } catch (error) {
+      final message = messageForError(
+        error,
+        fallback: 'Failed to fetch venues.',
+      );
+      emit(state.copyWith(isLoading: false, errorMessage: message));
+    }
+  }
+
+  void _handleLocationError(
+    Object error,
+    Emitter<VenueState> emit,
+  ) {
+    emit(
+      state.copyWith(isLoading: false, errorMessage: 'Location stream error.'),
+    );
+  }
+
+}

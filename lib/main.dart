@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'di/app_di.dart';
-import 'presentation/bloc/venue_bloc.dart';
-import 'presentation/pages/venue_page.dart';
-import 'presentation/bloc/venue_event.dart';
+import 'package:restaurant_finder/di/app_di.dart';
+import 'package:restaurant_finder/presentation/bloc/venue_bloc.dart';
+import 'package:restaurant_finder/presentation/bloc/venue_event.dart';
+import 'package:restaurant_finder/presentation/pages/venue_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

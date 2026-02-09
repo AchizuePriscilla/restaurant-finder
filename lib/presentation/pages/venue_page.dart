@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../bloc/venue_bloc.dart';
-import '../bloc/venue_event.dart';
-import '../state/venue_state.dart';
-import '../widgets/venue_list.dart';
+import 'package:restaurant_finder/presentation/bloc/venue_bloc.dart';
+import 'package:restaurant_finder/presentation/bloc/venue_event.dart';
+import 'package:restaurant_finder/presentation/state/venue_state.dart';
+import 'package:restaurant_finder/presentation/widgets/venue_list.dart';
 
 class VenuePage extends StatelessWidget {
   const VenuePage({super.key});

@@ -1,4 +1,4 @@
-import '../network/json_helpers.dart';
+import 'package:restaurant_finder/data/network/json_helpers.dart';
 
 class WoltApiResponseDto {
   const WoltApiResponseDto({required this.sections});

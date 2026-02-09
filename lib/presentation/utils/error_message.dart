@@ -1,4 +1,4 @@
-import '../../domain/errors/failure.dart';
+import 'package:restaurant_finder/domain/errors/failure.dart';
 
 String messageForError(Object error, {required String fallback}) {
   if (error is Failure) {

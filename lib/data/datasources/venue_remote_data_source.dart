@@ -1,6 +1,6 @@
-import '../../domain/value_objects/lat_lng.dart';
-import '../models/wolt_api_response_dto.dart';
-import '../network/api_client.dart';
+import 'package:restaurant_finder/data/models/wolt_api_response_dto.dart';
+import 'package:restaurant_finder/data/network/api_client.dart';
+import 'package:restaurant_finder/domain/value_objects/lat_lng.dart';
 
 abstract class VenueRemoteDataSource {
   Future<List<RestaurantItemDto>> fetchNearbyVenues(LatLng location);

@@ -1,6 +1,6 @@
-import '../entities/venue.dart';
-import '../repositories/venue_repository.dart';
-import '../value_objects/lat_lng.dart';
+import 'package:restaurant_finder/domain/entities/venue.dart';
+import 'package:restaurant_finder/domain/repositories/venue_repository.dart';
+import 'package:restaurant_finder/domain/value_objects/lat_lng.dart';
 
 class GetVenuesForLocation {
   GetVenuesForLocation(this._venueRepository);

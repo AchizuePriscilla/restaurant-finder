@@ -1,7 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../domain/errors/failure.dart';
-import '../../domain/repositories/favourite_repository.dart';
+import 'package:restaurant_finder/domain/errors/failure.dart';
+import 'package:restaurant_finder/domain/repositories/favourite_repository.dart';
 
 class FavouriteRepositoryImpl implements FavouriteRepository {
   FavouriteRepositoryImpl({

@@ -1,18 +1,18 @@
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../data/datasources/venue_remote_data_source.dart';
-import '../data/network/api_config.dart';
-import '../data/network/dio_api_client.dart';
-import '../data/providers/location_provider_impl.dart';
-import '../data/repositories/favourite_repository_impl.dart';
-import '../data/repositories/venue_repository_impl.dart';
-import '../domain/repositories/favourite_repository.dart';
-import '../domain/repositories/location_provider.dart';
-import '../domain/repositories/venue_repository.dart';
-import '../domain/usecases/apply_favourites_to_venues.dart';
-import '../domain/usecases/get_venues_for_location.dart';
-import '../domain/usecases/toggle_favourite.dart';
+import 'package:restaurant_finder/data/datasources/venue_remote_data_source.dart';
+import 'package:restaurant_finder/data/network/api_config.dart';
+import 'package:restaurant_finder/data/network/dio_api_client.dart';
+import 'package:restaurant_finder/data/providers/location_provider_impl.dart';
+import 'package:restaurant_finder/data/repositories/favourite_repository_impl.dart';
+import 'package:restaurant_finder/data/repositories/venue_repository_impl.dart';
+import 'package:restaurant_finder/domain/repositories/favourite_repository.dart';
+import 'package:restaurant_finder/domain/repositories/location_provider.dart';
+import 'package:restaurant_finder/domain/repositories/venue_repository.dart';
+import 'package:restaurant_finder/domain/usecases/apply_favourites_to_venues.dart';
+import 'package:restaurant_finder/domain/usecases/get_venues_for_location.dart';
+import 'package:restaurant_finder/domain/usecases/toggle_favourite.dart';
 
 class AppDi {
   AppDi._({

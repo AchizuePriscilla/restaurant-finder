@@ -1,5 +1,5 @@
-import '../entities/venue.dart';
-import '../repositories/favourite_repository.dart';
+import 'package:restaurant_finder/domain/entities/venue.dart';
+import 'package:restaurant_finder/domain/repositories/favourite_repository.dart';
 
 class ApplyFavouritesToVenues {
   ApplyFavouritesToVenues(this._favouriteRepository);

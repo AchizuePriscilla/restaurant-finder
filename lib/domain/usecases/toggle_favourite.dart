@@ -1,4 +1,4 @@
-import '../repositories/favourite_repository.dart';
+import 'package:restaurant_finder/domain/repositories/favourite_repository.dart';
 
 class ToggleFavouriteUseCase {
   ToggleFavouriteUseCase(this._favouriteRepository);

@@ -2,8 +2,8 @@ import 'dart:developer' as developer;
 
 import 'package:dio/dio.dart';
 
-import '../errors/api_exception.dart';
-import 'api_client.dart';
+import 'package:restaurant_finder/data/errors/api_exception.dart';
+import 'package:restaurant_finder/data/network/api_client.dart';
 
 class DioApiClient implements ApiClient {
   DioApiClient({required Dio dio}) : _dio = dio;

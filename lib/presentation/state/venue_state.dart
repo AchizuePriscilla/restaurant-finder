@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
-import '../../domain/entities/venue.dart';
-import '../../domain/value_objects/lat_lng.dart';
+import 'package:restaurant_finder/domain/entities/venue.dart';
+import 'package:restaurant_finder/domain/value_objects/lat_lng.dart';
 
 class VenueState extends Equatable {
   const VenueState({

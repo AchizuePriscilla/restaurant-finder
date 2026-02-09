@@ -1,13 +1,13 @@
 import 'dart:async';
 
-import '../../domain/entities/venue.dart';
-import '../../domain/errors/failure.dart';
-import '../../domain/repositories/venue_repository.dart';
-import '../../domain/value_objects/lat_lng.dart';
-import '../datasources/venue_remote_data_source.dart';
-import '../errors/api_exception.dart';
-import '../errors/api_exception_extensions.dart';
-import '../mapper/restaurant_item_mapper.dart';
+import 'package:restaurant_finder/data/datasources/venue_remote_data_source.dart';
+import 'package:restaurant_finder/data/errors/api_exception.dart';
+import 'package:restaurant_finder/data/errors/api_exception_extensions.dart';
+import 'package:restaurant_finder/data/mapper/restaurant_item_mapper.dart';
+import 'package:restaurant_finder/domain/entities/venue.dart';
+import 'package:restaurant_finder/domain/errors/failure.dart';
+import 'package:restaurant_finder/domain/repositories/venue_repository.dart';
+import 'package:restaurant_finder/domain/value_objects/lat_lng.dart';
 
 class VenueRepositoryImpl implements VenueRepository {
   VenueRepositoryImpl({required VenueRemoteDataSource remoteDataSource})

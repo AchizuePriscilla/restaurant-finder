@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:developer' as developer;
 
-import '../../domain/repositories/location_provider.dart';
-import '../../domain/value_objects/lat_lng.dart';
+import 'package:restaurant_finder/domain/repositories/location_provider.dart';
+import 'package:restaurant_finder/domain/value_objects/lat_lng.dart';
 
 class LocationProviderImpl implements LocationProvider {
   LocationProviderImpl({

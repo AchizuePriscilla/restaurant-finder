@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../domain/entities/venue.dart';
+import 'package:restaurant_finder/domain/entities/venue.dart';
 
 class VenueCard extends StatelessWidget {
   const VenueCard({

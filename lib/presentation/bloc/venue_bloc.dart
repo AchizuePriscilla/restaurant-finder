@@ -1,13 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../domain/repositories/location_provider.dart';
-import '../../domain/usecases/apply_favourites_to_venues.dart';
-import '../../domain/usecases/get_venues_for_location.dart';
-import '../../domain/usecases/toggle_favourite.dart';
-import '../../domain/value_objects/lat_lng.dart';
-import '../state/venue_state.dart';
-import 'venue_event.dart';
-import '../utils/error_message.dart';
+import 'package:restaurant_finder/domain/repositories/location_provider.dart';
+import 'package:restaurant_finder/domain/usecases/apply_favourites_to_venues.dart';
+import 'package:restaurant_finder/domain/usecases/get_venues_for_location.dart';
+import 'package:restaurant_finder/domain/usecases/toggle_favourite.dart';
+import 'package:restaurant_finder/domain/value_objects/lat_lng.dart';
+import 'package:restaurant_finder/presentation/state/venue_state.dart';
+import 'package:restaurant_finder/presentation/bloc/venue_event.dart';
+import 'package:restaurant_finder/presentation/utils/error_message.dart';
 
 class VenueBloc extends Bloc<VenueEvent, VenueState> {
   VenueBloc({

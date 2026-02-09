@@ -9,9 +9,9 @@ class LocationProviderImpl implements LocationProvider {
     Duration interval = const Duration(seconds: 10),
     List<LatLng>? coordinates,
   })  : _interval = interval,
-        _coordinates = List<LatLng>.unmodifiable(
-          coordinates ?? _defaultCoordinates,
-        );
+        _coordinates = coordinates != null
+            ? List<LatLng>.unmodifiable(coordinates)
+            : _defaultCoordinates;
 
   static const List<LatLng> _defaultCoordinates = [
     LatLng(latitude: 60.169418, longitude: 24.931618),
@@ -28,56 +28,33 @@ class LocationProviderImpl implements LocationProvider {
   final Duration _interval;
   final List<LatLng> _coordinates;
 
-  Timer? _timer;
-  StreamController<LatLng>? _controller;
-  int _index = 0;
-
   @override
-  Stream<LatLng> locationStream() {
-    _controller ??= StreamController<LatLng>(
-      onListen: _start,
-      onCancel: _stop,
-    );
-    return _controller!.stream;
-  }
-
-  void _start() {
-    _emitCurrent();
-    _timer = Timer.periodic(_interval, (_) => _emitNext());
-  }
-
-  void _emitCurrent() {
+  Stream<LatLng> locationStream() async* {
     if (_coordinates.isEmpty) {
-      return;
-    }
-    final current = _coordinates[_index];
-    developer.log(
-      'Location emitted: index=$_index '
-      'lat=${current.latitude} lon=${current.longitude}',
-      name: 'LocationProviderImpl',
-    );
-    _controller?.add(current);
-  }
-
-  void _emitNext() {
-    if (_coordinates.isEmpty) {
-      return;
-    }
-    _index += 1;
-    if (_index >= _coordinates.length) {
-      _index = 0;
       developer.log(
-        'Location loop reset',
+        'No coordinates configured — stream completing immediately',
         name: 'LocationProviderImpl',
       );
+      return;
     }
-    _emitCurrent();
-  }
 
-  void _stop() {
-    _timer?.cancel();
-    _timer = null;
-    _controller?.close();
-    _controller = null;
+    var index = 0;
+
+    while (true) {
+      final current = _coordinates[index];
+      developer.log(
+        'Location emitted: index=$index '
+        'lat=${current.latitude} lon=${current.longitude}',
+        name: 'LocationProviderImpl',
+      );
+      yield current;
+
+      index = (index + 1) % _coordinates.length;
+      if (index == 0) {
+        developer.log('Location loop reset', name: 'LocationProviderImpl');
+      }
+
+      await Future.delayed(_interval);
+    }
   }
 }

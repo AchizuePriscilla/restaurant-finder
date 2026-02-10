@@ -81,10 +81,7 @@ class VenueBloc extends Bloc<VenueEvent, VenueState> {
   ) async {
     emit(state.copyWith(isLoading: true, clearErrorMessage: true));
 
-    final result = await _getVenuesForLocation(
-      location,
-      limit: _venueLimit,
-    );
+    final result = await _getVenuesForLocation(location, limit: _venueLimit);
 
     await result.fold(
       (failure) async {
@@ -119,13 +116,9 @@ class VenueBloc extends Bloc<VenueEvent, VenueState> {
     );
   }
 
-  void _handleLocationError(
-    Object error,
-    Emitter<VenueState> emit,
-  ) {
+  void _handleLocationError(Object error, Emitter<VenueState> emit) {
     emit(
       state.copyWith(isLoading: false, errorMessage: 'Location stream error.'),
     );
   }
-
 }

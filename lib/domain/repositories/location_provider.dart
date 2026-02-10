@@ -1,4 +1,4 @@
-import '../value_objects/lat_lng.dart';
+import 'package:restaurant_finder/domain/value_objects/lat_lng.dart';
 
 abstract class LocationProvider {
   Stream<LatLng> locationStream();

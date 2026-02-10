@@ -10,42 +10,18 @@ class DioApiClient implements ApiClient {
 
   final Dio _dio;
 
-  @override
-  Future<Map<String, dynamic>> getJson(
-    String path, {
-    Map<String, dynamic>? queryParameters,
-  }) async {
-    final response = await _dio.get<Object?>(
-      path,
-      queryParameters: queryParameters,
-    );
-    final data = response.data;
-    if (data is Map<String, dynamic>) {
-      return data;
+  Future<Response<Object?>> _request(
+    Future<Response<Object?>> Function() perform,
+  ) async {
+    try {
+      return await perform();
+    } on DioException catch (err, stackTrace) {
+      final apiException = _mapDioToApiException(err);
+      Error.throwWithStackTrace(apiException, stackTrace);
     }
-    throw ApiException(
-      message: 'Unexpected JSON structure',
-      type: ApiExceptionType.parsing,
-    );
-  }
-}
-
-class ApiExceptionInterceptor extends Interceptor {
-  @override
-  void onError(DioException err, ErrorInterceptorHandler handler) {
-    final apiException = _mapException(err);
-    handler.reject(
-      DioException(
-        requestOptions: err.requestOptions,
-        response: err.response,
-        type: err.type,
-        error: apiException,
-        message: err.message,
-      ),
-    );
   }
 
-  ApiException _mapException(DioException err) {
+  ApiException _mapDioToApiException(DioException err) {
     final existing = err.error;
     if (existing is ApiException) {
       return existing;
@@ -90,6 +66,27 @@ class ApiExceptionInterceptor extends Interceptor {
       message: 'Unexpected error',
       type: ApiExceptionType.unexpected,
       error: err.error,
+    );
+  }
+
+  @override
+  Future<Map<String, dynamic>> getJson(
+    String path, {
+    Map<String, dynamic>? queryParameters,
+  }) async {
+    final response = await _request(
+      () => _dio.get<Object?>(
+        path,
+        queryParameters: queryParameters,
+      ),
+    );
+    final data = response.data;
+    if (data is Map<String, dynamic>) {
+      return data;
+    }
+    throw ApiException(
+      message: 'Unexpected JSON structure',
+      type: ApiExceptionType.parsing,
     );
   }
 }

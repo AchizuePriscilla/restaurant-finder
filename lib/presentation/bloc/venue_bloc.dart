@@ -52,23 +52,27 @@ class VenueBloc extends Bloc<VenueEvent, VenueState> {
     ToggleFavouriteVenue event,
     Emitter<VenueState> emit,
   ) async {
-    try {
-      await _toggleFavouriteUseCase(event.venueId);
-      final updated = state.venues
-          .map(
-            (venue) => venue.id == event.venueId
-                ? venue.copyWith(isFavourite: !venue.isFavourite)
-                : venue,
-          )
-          .toList(growable: false);
-      emit(state.copyWith(venues: updated, clearErrorMessage: true));
-    } catch (error) {
-      final message = messageForError(
-        error,
-        fallback: 'Failed to toggle favourite.',
-      );
-      emit(state.copyWith(errorMessage: message));
-    }
+    final result = await _toggleFavouriteUseCase(event.venueId);
+
+    await result.fold(
+      (failure) async {
+        final message = messageForError(
+          failure,
+          fallback: 'Failed to toggle favourite.',
+        );
+        emit(state.copyWith(errorMessage: message));
+      },
+      (_) async {
+        final updated = state.venues
+            .map(
+              (venue) => venue.id == event.venueId
+                  ? venue.copyWith(isFavourite: !venue.isFavourite)
+                  : venue,
+            )
+            .toList(growable: false);
+        emit(state.copyWith(venues: updated, clearErrorMessage: true));
+      },
+    );
   }
 
   Future<void> _handleLocation(
@@ -77,24 +81,42 @@ class VenueBloc extends Bloc<VenueEvent, VenueState> {
   ) async {
     emit(state.copyWith(isLoading: true, clearErrorMessage: true));
 
-    try {
-      final venues = await _getVenuesForLocation(location, limit: _venueLimit);
-      final venuesWithFavourites = await _applyFavouritesToVenues(venues);
-      emit(
-        state.copyWith(
-          currentLocation: location,
-          venues: venuesWithFavourites,
-          isLoading: false,
-          clearErrorMessage: true,
-        ),
-      );
-    } catch (error) {
-      final message = messageForError(
-        error,
-        fallback: 'Failed to fetch venues.',
-      );
-      emit(state.copyWith(isLoading: false, errorMessage: message));
-    }
+    final result = await _getVenuesForLocation(
+      location,
+      limit: _venueLimit,
+    );
+
+    await result.fold(
+      (failure) async {
+        final message = messageForError(
+          failure,
+          fallback: 'Failed to fetch venues.',
+        );
+        emit(state.copyWith(isLoading: false, errorMessage: message));
+      },
+      (venues) async {
+        final favouritesResult = await _applyFavouritesToVenues(venues);
+        await favouritesResult.fold(
+          (failure) async {
+            final message = messageForError(
+              failure,
+              fallback: 'Failed to fetch venues.',
+            );
+            emit(state.copyWith(isLoading: false, errorMessage: message));
+          },
+          (venuesWithFavourites) async {
+            emit(
+              state.copyWith(
+                currentLocation: location,
+                venues: venuesWithFavourites,
+                isLoading: false,
+                clearErrorMessage: true,
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 
   void _handleLocationError(

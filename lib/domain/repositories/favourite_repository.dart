@@ -1,4 +1,6 @@
+import 'package:restaurant_finder/domain/core/result.dart';
+
 abstract class FavouriteRepository {
-  Future<Set<String>> getFavourites();
-  Future<void> toggleFavourite(String venueId);
+  Future<Result<Set<String>>> getFavourites();
+  Future<Result<void>> toggleFavourite(String venueId);
 }

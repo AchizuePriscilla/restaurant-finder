@@ -59,10 +59,9 @@ class AppDi {
         responseType: ResponseType.json,
       ),
     );
-    dio.interceptors.addAll([
+    dio.interceptors.add(
       buildLoggingInterceptor(),
-      ApiExceptionInterceptor(),
-    ]);
+    );
 
     final apiClient = DioApiClient(dio: dio);
     final remoteDataSource = VenueRemoteDataSourceImpl(client: apiClient);

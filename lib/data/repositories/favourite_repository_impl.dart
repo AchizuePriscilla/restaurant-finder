@@ -1,5 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:dartz/dartz.dart';
+import 'package:restaurant_finder/domain/core/result.dart';
 import 'package:restaurant_finder/domain/errors/failure.dart';
 import 'package:restaurant_finder/domain/repositories/favourite_repository.dart';
 
@@ -13,22 +15,24 @@ class FavouriteRepositoryImpl implements FavouriteRepository {
   static const String _favouritesKey = 'favourite_venue_ids';
 
   @override
-  Future<Set<String>> getFavourites() async {
+  Future<Result<Set<String>>> getFavourites() async {
     try {
       final values =
           _sharedPreferences.getStringList(_favouritesKey) ?? <String>[];
-      return values.toSet();
+      return Right(values.toSet());
     } catch (error, stackTrace) {
-      throw Failure.unknown(
-        message: 'Failed to load favourites.',
-        cause: error,
-        stackTrace: stackTrace,
+      return Left(
+        Failure.unknown(
+          message: 'Failed to load favourites.',
+          cause: error,
+          stackTrace: stackTrace,
+        ),
       );
     }
   }
 
   @override
-  Future<void> toggleFavourite(String venueId) async {
+  Future<Result<void>> toggleFavourite(String venueId) async {
     try {
       final values =
           _sharedPreferences.getStringList(_favouritesKey) ?? <String>[];
@@ -44,11 +48,14 @@ class FavouriteRepositoryImpl implements FavouriteRepository {
         favourites.toList(growable: false),
       );
     } catch (error, stackTrace) {
-      throw Failure.unknown(
-        message: 'Failed to toggle favourite.',
-        cause: error,
-        stackTrace: stackTrace,
+      return Left(
+        Failure.unknown(
+          message: 'Failed to toggle favourite.',
+          cause: error,
+          stackTrace: stackTrace,
+        ),
       );
     }
+    return const Right(null);
   }
 }

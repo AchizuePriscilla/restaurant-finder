@@ -1,3 +1,4 @@
+import 'package:restaurant_finder/domain/core/result.dart';
 import 'package:restaurant_finder/domain/repositories/favourite_repository.dart';
 
 class ToggleFavouriteUseCase {
@@ -5,7 +6,7 @@ class ToggleFavouriteUseCase {
 
   final FavouriteRepository _favouriteRepository;
 
-  Future<void> call(String venueId) {
+  Future<Result<void>> call(String venueId) {
     return _favouriteRepository.toggleFavourite(venueId);
   }
 }

@@ -1,6 +1,8 @@
+import 'package:equatable/equatable.dart';
+
 enum FailureType { network, timeout, parsing, unknown }
 
-class Failure implements Exception {
+class Failure extends Equatable implements Exception {
   const Failure({
     required this.type,
     required this.message,
@@ -64,6 +66,9 @@ class Failure implements Exception {
       stackTrace: stackTrace,
     );
   }
+
+  @override
+  List<Object?> get props => [type, message, cause];
 
   @override
   String toString() {

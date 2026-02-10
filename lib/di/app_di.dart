@@ -8,7 +8,7 @@ import 'package:restaurant_finder/data/providers/location_provider_impl.dart';
 import 'package:restaurant_finder/data/repositories/favourite_repository_impl.dart';
 import 'package:restaurant_finder/data/repositories/venue_repository_impl.dart';
 import 'package:restaurant_finder/domain/repositories/favourite_repository.dart';
-import 'package:restaurant_finder/domain/repositories/location_provider.dart';
+import 'package:restaurant_finder/domain/providers/location_provider.dart';
 import 'package:restaurant_finder/domain/repositories/venue_repository.dart';
 import 'package:restaurant_finder/domain/usecases/apply_favourites_to_venues.dart';
 import 'package:restaurant_finder/domain/usecases/get_venues_for_location.dart';

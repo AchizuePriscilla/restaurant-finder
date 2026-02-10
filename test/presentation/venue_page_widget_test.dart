@@ -5,6 +5,7 @@ import 'package:mocktail/mocktail.dart';
 
 import 'package:dartz/dartz.dart';
 import 'package:restaurant_finder/domain/entities/venue.dart';
+import 'package:restaurant_finder/domain/errors/failure.dart';
 import 'package:restaurant_finder/domain/usecases/apply_favourites_to_venues.dart';
 import 'package:restaurant_finder/domain/usecases/get_venues_for_location.dart';
 import 'package:restaurant_finder/domain/usecases/toggle_favourite.dart';
@@ -27,6 +28,42 @@ void main() {
     mockLocationProvider = MockLocationProvider();
     mockVenueRepository = MockVenueRepository();
     mockFavouriteRepository = MockFavouriteRepository();
+  });
+
+  testWidgets('shows error message when fetch venues fails', (tester) async {
+    const location = LatLng(latitude: 60.17, longitude: 24.94);
+
+    when(() => mockLocationProvider.locationStream())
+        .thenAnswer((_) => Stream.value(location));
+    when(() => mockVenueRepository.fetchNearbyVenues(any()))
+        .thenAnswer(
+          (_) async => Left(
+            Failure.unknown(message: 'Network error.'),
+          ),
+        );
+    when(() => mockFavouriteRepository.getFavourites())
+        .thenAnswer((_) async => const Right(<String>{}));
+
+    final bloc = VenueBloc(
+      locationProvider: mockLocationProvider,
+      getVenuesForLocation: GetVenuesForLocation(mockVenueRepository),
+      applyFavouritesToVenues: ApplyFavouritesToVenues(mockFavouriteRepository),
+      toggleFavouriteUseCase: ToggleFavouriteUseCase(mockFavouriteRepository),
+    );
+    addTearDown(bloc.close);
+
+    await tester.pumpWidget(
+      BlocProvider<VenueBloc>.value(
+        value: bloc,
+        child: const MaterialApp(home: VenuePage()),
+      ),
+    );
+
+    bloc.add(const LocationObservingStarted());
+    await tester.pumpAndSettle();
+
+    expect(find.text('Network error.'), findsOneWidget);
+    expect(find.text('No venues nearby'), findsNothing);
   });
 
   testWidgets('renders venue list when venues exist', (tester) async {

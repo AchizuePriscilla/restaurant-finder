@@ -16,6 +16,25 @@ void main() {
     client = DioApiClient(dio: mockDio);
   });
 
+  test('returns response data when it is a Map', () async {
+    final responseData = <String, dynamic>{'key': 'value'};
+    final response = Response<Object?>(
+      requestOptions: RequestOptions(path: ''),
+      data: responseData,
+    );
+
+    when(
+      () => mockDio.get<Object?>(
+        any(),
+        queryParameters: any(named: 'queryParameters'),
+      ),
+    ).thenAnswer((_) async => response);
+
+    final result = await client.getJson('/test');
+
+    expect(result, equals(responseData));
+  });
+
   test('maps Dio timeout error to ApiException.timeout', () async {
     when(
       () => mockDio.get<Object?>(
